@@ -1,53 +1,56 @@
 package com.github.tddtrainingcamp.guessnumber;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintStream;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Created by Thoughtworks on 1/26/16.
- */
+@RunWith(MockitoJUnitRunner.class)
 public class GameTest {
 
-    @Test
-    public void welcome_when_start_game() throws Exception {
+    @Mock
+    private BufferedReader reader;
 
-        BufferedReader reader = mock(BufferedReader.class);
-        PrintStream out = mock(PrintStream.class);
-        Game game = new Game(reader, out);
-        when(reader.readLine()).thenReturn("");
+    @Mock
+    private PrintStream out;
 
-        game.start();
+    private Game game() {
+        return new Game(reader, out);
+    }
 
+    private InOrder verifyInOrder() {
         InOrder inOrder = inOrder(out);
         inOrder.verify(out).println("Welcome!");
         inOrder.verify(out).println("Please input your number(6):");
+        return inOrder;
     }
 
     @Test
-    public void congratulation_when_first_try_match() throws Exception {
-        BufferedReader reader = mock(BufferedReader.class);
-        PrintStream out = mock(PrintStream.class);
-        Game game = new Game(reader, out);
+    public void welcome_when_start() throws IOException {
+
         when(reader.readLine()).thenReturn("1234");
 
-        game.start();
+        game().start();
 
-        InOrder inOrder = inOrder(out);
-        inOrder.verify(out).println("Welcome!");
-        inOrder.verify(out).println("Congratulation");
+        verifyInOrder();
     }
 
     @Test
-    public void generate_answer_is_random() throws Exception {
-        String answer1 = AnswerGenerator.genrate();
-        String answer2 = AnswerGenerator.genrate();
-        assertThat(answer1.equals(answer2), is(false));
+    public void congratulations_when_input_first() throws IOException {
+
+        when(reader.readLine()).thenReturn("1234");
+
+        game().start();
+
+        InOrder inOrder = verifyInOrder();
+        inOrder.verify(out).println("Congratulations!");
     }
+
 }
