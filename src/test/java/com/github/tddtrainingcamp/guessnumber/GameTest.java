@@ -21,6 +21,12 @@ public class GameTest {
     @Mock
     private PrintStream out;
 
+    @Mock
+    private Guess guess;
+
+    @Mock
+    private AnswerGenerator answer;
+
     private Game game() {
         return new Game(reader, out);
     }
@@ -50,6 +56,23 @@ public class GameTest {
         game().start();
 
         InOrder inOrder = verifyInOrder();
+        inOrder.verify(out).println("Congratulations!");
+    }
+
+    @Test
+    public void congratulations_when_input_round() throws IOException {
+
+        when(answer.generate()).thenReturn("1234");
+        when(reader.readLine()).thenReturn("5678").thenReturn("1234");
+
+        when(guess.compare("1234","5678")).thenReturn("0A0B");
+        when(guess.compare("1234","1234")).thenReturn("4A0B");
+
+        game().start();
+
+        InOrder inOrder = verifyInOrder();
+        inOrder.verify(out).println("0A0B");
+        inOrder.verify(out).println("Please input your number(5):");
         inOrder.verify(out).println("Congratulations!");
     }
 

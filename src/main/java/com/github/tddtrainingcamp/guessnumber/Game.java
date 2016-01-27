@@ -10,11 +10,15 @@ import java.io.PrintStream;
 public class Game {
     private BufferedReader reader;
     private PrintStream out;
+    private Guess guess;
+    private AnswerGenerator answer;
+    private int remain = 6;
 
-    public Game(BufferedReader reader, PrintStream out) {
-
+    public Game(BufferedReader reader, PrintStream out,Guess guess, AnswerGenerator answer) {
         this.reader = reader;
         this.out = out;
+        this.guess = guess;
+        this.answer = answer.generate();
     }
 
     public void start() throws IOException {
